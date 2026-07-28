@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Skill Overview | Pilates Addicts</title>
+  <link rel="stylesheet" href="../../styles.css" />
+</head>
+<body>
+    <header class="site-header">
+    <div class="brand">
+      <h1>Real AI Skill vs. Static Helper</h1>
+      <p>A true AI skill is not a fixed form or simple rule engine. It is a component that sends your intent to a language model, receives a customized plan, and surfaces that result in a usable format.</p>
+    </div>
+  </header>
+<main class="app-shell">
+    <section class="content-panel">
+      <article class="card hero-card"><h3>How a real AI skill works</h3>
+        <ul>
+          <li>Collect the user’s teaching intent, session goals, client level, and desired duration.</li>
+          <li>Format that information into a prompt that an AI model can understand.</li>
+          <li>Send the prompt to an AI service such as OpenAI, OpenRouter, or another model provider.</li>
+          <li>Receive a generated lesson plan, then present it clearly in the interface.</li>
+        </ul>
+        <h3>Why this matters for test-plan generation</h3>
+        <p>Generating a good lesson plan requires thought, context, and adaptation. A true AI skill can propose exercises, sequencing, progressions, and cues aligned to the student’s needs, rather than only selecting from a fixed list.</p>
+        <h3>What this repo currently has</h3>
+        <p>The app currently hosts a content library and HTML pages. The AI skill would be a separate integration layer: a provider module, a prompt builder, and a UI flow that sends requests to an AI model.</p>
+        <h3>Next step</h3>
+        <p>To make this real, the next implementation would be:</p>
+        <ol>
+          <li>Define the AI prompt and output format.</li>
+          <li>Add an AI provider module that connects to a model API.</li>
+          <li>Build the UI to gather lesson goals and display generated plans.</li>
+        </ol>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
+

@@ -1,0 +1,21 @@
+# Short Spine
+
+- Short Spine is a variation
+- Short Spine is an ask
+- Not everyone is comfortable to invert and have the weight stacked above their shoulder blade
+- The variation we have in the book makes it a lot easier
+- Clients really like it
+- It’s literally rolling like a ball
+- Nice spinal massage
+- Lengthen, tuck up towards the center, we are not going over
+- Keep your back up; we are going to tuck your knees in towards the chest
+- Your knees land on top of your head
+- The back of your knee is tucked into the back of your calf
+- Keep everything glued in together
+- Peel your spine down one vertebra at a time landing your tailbone down
+- Plea version is also a variation
+- Press up - don’t let the strap win
+- Inhale tuck your knees
+- Exhale tuck
+- Don’t come back with your knees but come back with your spine
+- Don’t want your knees to detach

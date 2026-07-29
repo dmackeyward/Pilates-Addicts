@@ -1,6 +1,6 @@
 # Exercises using 1 Yellow + 1 Green Spring
 
-Use 1 Yellow and 1 Green spring together for a slightly stronger option that still feels controlled.
+Use 1 Yellow and 1 Green spring together for a slightly stronger option that still feels controlled. This is a helpful step between the gentlest support and the more resistant options.
 
 ## Good fits
 

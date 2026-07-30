@@ -1,171 +1,12 @@
-const knowledgeBase = [
-  {
-    key: "home",
-    label: "Home",
-    description: "Studio overview and teaching philosophy for Pilates teaching resources.",
-    items: [
-      {
-        title: "What is Pilates?",
-        summary: "Foundation of Pilates practice and why it matters for teaching.",
-        link: "docs/home/what-is-pilates.html",
-      },
-      {
-        title: "My Teaching Philosophy",
-        summary: "Mindful movement, breath, and purposeful teaching approach.",
-        link: "docs/home/teaching-philosophy.html",
-      },
-      {
-        title: "Classical vs. Contemporary Pilates",
-        summary: "A focused comparison of traditional and modern Pilates methods for teaching.",
-        link: "docs/home/classical-vs-contemporary.html",
-      },
-    ],
-  },
-  {
-    key: "exercises",
-    label: "Exercises",
-    description: "Instructional exercise series divided by reformer category.",
-    items: [
-      {
-        title: "Standing Series",
-        summary: "A set of reformer standing exercises for balance, alignment, and control.",
-        link: "docs/exercises/standing-series/README.html",
-      },
-      {
-        title: "Seated Series",
-        summary: "Pilates seated reformer work for posture and core support.",
-        link: "docs/exercises/seated-series/README.html",
-      },
-      {
-        title: "Feet in Straps Series",
-        summary: "Lower-body and hip work with the feet in straps for stability and articulation.",
-        link: "docs/exercises/feet-in-straps-series/README.html",
-      },
-      {
-        title: "Side Lying Glute Series",
-        summary: "Side-lying glute and hip work that supports alignment and stability.",
-        link: "docs/exercises/side-lying-glute-series/README.html",
-      },
-      {
-        title: "Cheerleader Series",
-        summary: "Hands-in-strap work focused on inner thigh activation and core connection.",
-        link: "docs/exercises/standing-series/cheerleader-series.html",
-      },
-      {
-        title: "Short Spine",
-        summary: "A short spine variation with detailed inversion and spinal massage notes.",
-        link: "docs/exercises/feet-in-straps-series/short-spine-notes.html",
-      },
-    ],
-  },
-  {
-    key: "spring-settings",
-    label: "Spring Settings",
-    description: "A simple starter framework for choosing reformer spring tensions by support, challenge, and client readiness.",
-    items: [
-      {
-        title: "Introduction",
-        summary: "A simple overview of the spring-setting framework and how to progress from support to challenge.",
-        link: "docs/spring-settings/introduction/README.html",
-      },
-      {
-        title: "Exercises using 1 High Yellow",
-        summary: "Gentle support for mobility, alignment, and early strength work.",
-        link: "docs/spring-settings/yellow/README.html",
-      },
-      {
-        title: "Exercises using 1 Yellow + 1 Green Spring",
-        summary: "A slightly stronger option for transitional and coordinated work.",
-        link: "docs/spring-settings/yellow-green/README.html",
-      },
-      {
-        title: "Exercises using 2 Green Springs",
-        summary: "Balanced intermediate resistance for full-body flow and strength.",
-        link: "docs/spring-settings/green/README.html",
-      },
-      {
-        title: "Exercises using 1 Red Spring",
-        summary: "A stronger setting for more demanding exercises and experienced clients.",
-        link: "docs/spring-settings/red/README.html",
-      },
-    ],
-  },
-  {
-    key: "class-plans",
-    label: "Class Plans",
-    description: "Ready-made class plans for different lesson goals and experience levels.",
-    items: [
-      {
-        title: "Class Plan 1",
-        summary: "A balanced full-body session with warm-up, core work, and cool down.",
-        link: "docs/class-plans/class-plan-1/README.html",
-      },
-      {
-        title: "Class Plan 2",
-        summary: "Focus on stability, breath coordination, and reformer flow.",
-        link: "docs/class-plans/class-plan-2/README.html",
-      },
-      {
-        title: "Class Plan 3",
-        summary: "A timing-focused lesson plan for footwork, supine work, and hands-in-straps.",
-        link: "docs/class-plans/class-plan-3/README.html",
-      },
-    ],
-  },
-  {
-    key: "method",
-    label: "Anatomical and Biomechanical Foundations",
-    description: "Core movement guidelines that keep teaching safe, effective, and powerful.",
-    items: [
-      {
-        title: "Neutral spine",
-        summary: "A balanced spinal alignment that supports the core while remaining mobile.",
-        link: "docs/home/anatomical-biomechanical-principles.html#neutral-spine",
-      },
-      {
-        title: "Shoulders back and down",
-        summary: "Upper-body positioning that supports breathing, posture, and clean movement.",
-        link: "docs/home/anatomical-biomechanical-principles.html#shoulders",
-      },
-      {
-        title: "Hips balanced",
-        summary: "Pelvic alignment that creates a stable base and efficient force transfer.",
-        link: "docs/home/anatomical-biomechanical-principles.html#hips",
-      },
-      {
-        title: "Joints and muscles",
-        summary: "How the body is designed to move with control, mobility, and coordination.",
-        link: "docs/home/anatomical-biomechanical-principles.html#joints-and-muscles",
-      },
-      {
-        title: "Why this matters",
-        summary: "The importance of honoring anatomy and biomechanics in real Pilates work.",
-        link: "docs/home/anatomical-biomechanical-principles.html#why-this-matters",
-      },
-      {
-        title: "Teaching takeaway",
-        summary: "A practical framework for teaching alignment and movement with intention.",
-        link: "docs/home/anatomical-biomechanical-principles.html#teaching-takeaway",
-      },
-    ],
-  },
-  {
-    key: "assessments",
-    label: "Assessments",
-    description: "Evaluation notes and exam-focused resources for teaching preparation.",
-    items: [
-      {
-        title: "Exam",
-        summary: "Anterior pelvic stability assessment notes and reformer exam guidance.",
-        link: "docs/assessments/exam/README.html",
-      },
-    ],
-  },
-];
-
 const categoryList = document.getElementById("categoryList");
 const contentHeader = document.getElementById("contentHeader");
 const contentGrid = document.getElementById("contentGrid");
+const searchInput = document.getElementById("resourceSearch");
+
+let selectedIndex = 0;
+let currentView = "category";
+let currentItems = [];
+let currentParentTitle = "";
 
 function normalizeRoute(hash) {
   return (hash || window.location.hash).replace(/^#\/?/, "");
@@ -185,6 +26,7 @@ function navigateTo(link, title, summary) {
 }
 
 function renderCategoryButtons() {
+  categoryList.innerHTML = "";
   knowledgeBase.forEach((category, index) => {
     const button = document.createElement("button");
     button.className = "category-button";
@@ -194,35 +36,112 @@ function renderCategoryButtons() {
   });
 }
 
-function selectCategory(index) {
-  const selected = knowledgeBase[index];
-  const buttons = document.querySelectorAll(".category-button");
-  buttons.forEach((button, idx) => button.classList.toggle("active", idx === index));
-
+function renderHomeDashboard() {
   contentHeader.style.display = "block";
   contentHeader.innerHTML = `
-    <h2>${selected.label}</h2>
-    <p>${selected.description}</p>
+    <h2>Welcome to your Pilates teaching hub</h2>
+    <p>Jump quickly to class plans, exercise series, and foundational teaching principles.</p>
   `;
 
   contentGrid.innerHTML = "";
 
-  selected.items.forEach((item) => {
+  const heroCard = document.createElement("article");
+  heroCard.className = "card hero-card";
+  heroCard.innerHTML = `
+    <h2>Build better classes with clear, searchable teaching resources</h2>
+    <p>Use this dashboard to move from theory to exercise selection and class programming with less friction.</p>
+  `;
+  contentGrid.appendChild(heroCard);
+
+  const sectionGrid = document.createElement("div");
+  sectionGrid.className = "section-grid";
+
+  knowledgeBase.forEach((section) => {
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
-      <h3>${item.title}</h3>
-      <p>${item.summary}</p>
-      <a href="#${item.link}" class="resource-link">View resource</a>
+      <h3>${section.label}</h3>
+      <p>${section.description}</p>
+      <button data-section-index="${knowledgeBase.indexOf(section)}">Open section</button>
     `;
 
-    const link = card.querySelector(".resource-link");
-    link.addEventListener("click", (event) => {
+    card.querySelector("button").addEventListener("click", () => {
+      selectCategory(knowledgeBase.indexOf(section));
+    });
+
+    sectionGrid.appendChild(card);
+  });
+
+  contentGrid.appendChild(sectionGrid);
+}
+
+function renderItems(items, title, description, options = {}) {
+  contentHeader.style.display = "block";
+  contentHeader.innerHTML = `
+    <h2>${title}</h2>
+    <p>${description}</p>
+  `;
+
+  contentGrid.innerHTML = "";
+
+  const filteredItems = getFilteredItems(items);
+
+  if (!filteredItems.length) {
+    const emptyState = document.createElement("article");
+    emptyState.className = "card empty-state";
+    emptyState.innerHTML = `<p>No matches for that search.</p>`;
+    contentGrid.appendChild(emptyState);
+    return;
+  }
+
+  filteredItems.forEach((item) => {
+    const card = document.createElement("article");
+    card.className = "card";
+    const hasChildren = Array.isArray(item.children) && item.children.length;
+    const actionLabel = hasChildren
+      ? "View lessons"
+      : options.useExerciseLabel
+        ? "View Exercise"
+        : "View resource";
+
+    card.innerHTML = `
+      <h3>${item.title}</h3>
+      <p>${item.summary}</p>
+      ${hasChildren ? '<button class="resource-link" type="button">' + actionLabel + '</button>' : '<a href="#' + (item.link || "") + '" class="resource-link">' + actionLabel + '</a>'}
+    `;
+
+    const action = card.querySelector(".resource-link");
+    action.addEventListener("click", (event) => {
       event.preventDefault();
-      navigateTo(item.link, item.title, item.summary);
+      if (hasChildren) {
+        renderLessonChoices(item.children, item.title);
+      } else {
+        navigateTo(item.link, item.title, item.summary);
+      }
     });
 
     contentGrid.appendChild(card);
+  });
+}
+
+function renderLessonChoices(items, parentTitle) {
+  currentView = "children";
+  currentItems = items;
+  currentParentTitle = parentTitle;
+  renderItems(items, parentTitle, "Select a lesson to open it.");
+}
+
+function selectCategory(index) {
+  selectedIndex = index;
+  currentView = "category";
+  const selected = knowledgeBase[index];
+  const buttons = document.querySelectorAll(".category-button");
+  buttons.forEach((button, idx) => button.classList.toggle("active", idx === index));
+
+  currentItems = selected.items;
+  currentParentTitle = selected.label;
+  renderItems(selected.items, selected.label, selected.description, {
+    useExerciseLabel: selected.key === "exercise-library",
   });
 }
 
@@ -243,10 +162,20 @@ function loadDocument(link, title, summary) {
   `;
 }
 
+function getFilteredItems(items) {
+  const term = searchInput.value.trim().toLowerCase();
+  if (!term) return items;
+
+  return items.filter((item) => {
+    const haystack = `${item.title} ${item.summary}`.toLowerCase();
+    return haystack.includes(term);
+  });
+}
+
 function handleRoute() {
   const route = normalizeRoute(window.location.hash);
   if (!route) {
-    selectCategory(0);
+    renderHomeDashboard();
     return;
   }
 
@@ -258,7 +187,15 @@ function handleRoute() {
   }
 }
 
+searchInput.addEventListener("input", () => {
+  if (currentView === "children") {
+    renderLessonChoices(getFilteredItems(currentItems), currentParentTitle);
+  } else {
+    selectCategory(selectedIndex);
+  }
+});
+
 window.addEventListener("hashchange", handleRoute);
 
 renderCategoryButtons();
-handleRoute();
+renderHomeDashboard();

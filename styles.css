@@ -225,14 +225,12 @@ body {
   align-self: flex-start;
   box-sizing: border-box;
   flex-shrink: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .resource-link:hover {
-  background: #d7f7f2;
+  color: #0b5e57;
   border-color: #0b5e57;
-  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.14);
-  transform: translateY(-1px);
 }
 
 .lesson-children {

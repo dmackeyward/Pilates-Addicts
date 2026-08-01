@@ -100,9 +100,11 @@ function renderItems(items, title, description, options = {}) {
     const hasChildren = Array.isArray(item.children) && item.children.length;
     const actionLabel = hasChildren
       ? "View lessons"
-      : options.useExerciseLabel
+      : options.sectionKey === "exercise-library"
         ? "View Exercise"
-        : "View resource";
+        : options.sectionKey === "lessons"
+          ? "View lesson"
+          : "View resource";
 
     card.innerHTML = `
       <h3>${item.title}</h3>
@@ -128,7 +130,7 @@ function renderLessonChoices(items, parentTitle) {
   currentView = "children";
   currentItems = items;
   currentParentTitle = parentTitle;
-  renderItems(items, parentTitle, "Select a lesson to open it.");
+  renderItems(items, parentTitle, "Select a lesson to open it.", { sectionKey: "lessons" });
 }
 
 function selectCategory(index) {
@@ -142,7 +144,16 @@ function selectCategory(index) {
   currentParentTitle = selected.label;
   renderItems(selected.items, selected.label, selected.description, {
     useExerciseLabel: selected.key === "exercise-library",
+    sectionKey: selected.key,
   });
+}
+
+function buildResourceUrl(link) {
+  const [path, hash] = link.split("#");
+  const separator = path.includes("?") ? "&" : "?";
+  const cacheBuster = `${separator}v=${Date.now()}`;
+
+  return hash ? `${path}${cacheBuster}#${hash}` : `${path}${cacheBuster}`;
 }
 
 function loadDocument(link, title, summary) {
@@ -157,7 +168,7 @@ function loadDocument(link, title, summary) {
 
   contentGrid.innerHTML = `
     <div class="loaded-resource">
-      <iframe class="resource-iframe" src="${link}" title="${pageTitle}"></iframe>
+      <iframe class="resource-iframe" src="${buildResourceUrl(link)}" title="${pageTitle}"></iframe>
     </div>
   `;
 }
@@ -175,7 +186,7 @@ function getFilteredItems(items) {
 function handleRoute() {
   const route = normalizeRoute(window.location.hash);
   if (!route) {
-    renderHomeDashboard();
+    selectCategory(0);
     return;
   }
 
@@ -198,4 +209,4 @@ searchInput.addEventListener("input", () => {
 window.addEventListener("hashchange", handleRoute);
 
 renderCategoryButtons();
-renderHomeDashboard();
+handleRoute();

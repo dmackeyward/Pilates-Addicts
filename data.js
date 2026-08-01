@@ -148,21 +148,19 @@ const knowledgeBase = [
         link: "docs/home/anatomical-biomechanical-principles.html#why-this-matters",
       },
       {
+        title: "Winging",
+        summary: "How scapular winging affects shoulder blade control and upper-body movement.",
+        link: "docs/home/anatomical-biomechanical-principles.html#winging",
+      },
+      {
+        title: "Dome-ing",
+        summary: "How breath and core organization influence ribcage and abdominal support.",
+        link: "docs/home/anatomical-biomechanical-principles.html#dome-ing",
+      },
+      {
         title: "Teaching takeaway",
         summary: "A practical framework for teaching alignment and movement with intention.",
         link: "docs/home/anatomical-biomechanical-principles.html#teaching-takeaway",
-      },
-    ],
-  },
-  {
-    key: "assessments",
-    label: "Assessments",
-    description: "Evaluation notes and exam-focused resources to support teaching preparation.",
-    items: [
-      {
-        title: "Exam",
-        summary: "Anterior pelvic stability assessment notes and reformer exam guidance.",
-        link: "docs/assessments/exam/README.html",
       },
     ],
   },

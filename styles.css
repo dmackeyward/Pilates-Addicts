@@ -73,6 +73,9 @@ body {
   border-radius: 10px;
   margin-bottom: 14px;
   font: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .category-button {
@@ -113,8 +116,12 @@ body {
 
 .content-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
   gap: 18px;
+  justify-content: center;
+  max-width: 1040px;
+  margin-inline: auto;
+  align-items: start;
 }
 
 .card {
@@ -125,6 +132,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 254px;
 }
 
 .card.hero-card {
@@ -183,6 +191,14 @@ body {
   border: none;
   cursor: pointer;
   padding: 0;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.card a:hover,
+.card button:hover {
+  color: #0b5e57;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .resource-link {
@@ -209,12 +225,27 @@ body {
   align-self: flex-start;
   box-sizing: border-box;
   flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .resource-link:hover {
   background: #d7f7f2;
+  border-color: #0b5e57;
+  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.14);
+  transform: translateY(-1px);
 }
 
+.lesson-children {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.lesson-children .resource-link {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+}
 
 .loaded-resource {
   width: 100%;

@@ -37,6 +37,7 @@ function renderCategoryButtons() {
 }
 
 function renderHomeDashboard() {
+  contentGrid.classList.remove("resource-view");
   contentHeader.style.display = "block";
   contentHeader.innerHTML = `
     <h2>Welcome to your Pilates teaching hub</h2>
@@ -76,6 +77,7 @@ function renderHomeDashboard() {
 }
 
 function renderItems(items, title, description, options = {}) {
+  contentGrid.classList.remove("resource-view");
   contentHeader.style.display = "block";
   contentHeader.innerHTML = `
     <h2>${title}</h2>
@@ -96,7 +98,8 @@ function renderItems(items, title, description, options = {}) {
 
   filteredItems.forEach((item) => {
     const card = document.createElement("article");
-    card.className = "card";
+    const isSingleCardView = filteredItems.length === 1;
+    card.className = `card${isSingleCardView ? " single-card-full" : ""}`;
     const hasChildren = Array.isArray(item.children) && item.children.length;
     const actionLabel = hasChildren
       ? "View lessons"
@@ -157,19 +160,27 @@ function buildResourceUrl(link) {
 }
 
 function loadDocument(link, title, summary) {
+  contentGrid.classList.add("resource-view");
   const pageTitle = title || "Resource";
   const pageDescription = summary || "";
+  const descriptionMarkup = pageDescription ? `<p>${pageDescription}</p>` : "";
 
-  contentHeader.style.display = "none";
+  contentHeader.style.display = "block";
   contentHeader.innerHTML = `
     <h2>${pageTitle}</h2>
-    <p>${pageDescription}</p>
+    ${descriptionMarkup}
   `;
 
   contentGrid.innerHTML = `
-    <div class="loaded-resource">
-      <iframe class="resource-iframe" src="${buildResourceUrl(link)}" title="${pageTitle}"></iframe>
-    </div>
+    <article class="card single-resource-card">
+      <div class="single-resource-meta">
+        <h3>${pageTitle}</h3>
+        ${descriptionMarkup}
+      </div>
+      <div class="single-resource-frame">
+        <iframe class="resource-iframe" src="${buildResourceUrl(link)}" title="${pageTitle}"></iframe>
+      </div>
+    </article>
   `;
 }
 

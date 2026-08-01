@@ -171,17 +171,67 @@ function loadDocument(link, title, summary) {
     ${descriptionMarkup}
   `;
 
-  contentGrid.innerHTML = `
-    <article class="card single-resource-card">
-      <div class="single-resource-meta">
-        <h3>${pageTitle}</h3>
-        ${descriptionMarkup}
-      </div>
-      <div class="single-resource-frame">
-        <iframe class="resource-iframe" src="${buildResourceUrl(link)}" title="${pageTitle}"></iframe>
-      </div>
-    </article>
-  `;
+  contentGrid.innerHTML = "";
+
+  if (link && link.startsWith("docs/")) {
+    fetchResourceDocument(link);
+    return;
+  }
+
+  const frameContainer = document.createElement("div");
+  frameContainer.className = "single-resource-frame";
+
+  const iframe = document.createElement("iframe");
+  iframe.className = "resource-iframe";
+  iframe.src = buildResourceUrl(link);
+  iframe.title = pageTitle;
+
+  frameContainer.appendChild(iframe);
+  contentGrid.appendChild(frameContainer);
+}
+
+async function fetchResourceDocument(link) {
+  const resourceUrl = buildResourceUrl(link);
+  try {
+    const response = await fetch(resourceUrl);
+    if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+
+    const htmlText = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, "text/html");
+
+    const header = doc.querySelector("header.site-header");
+    if (header) header.remove();
+
+    const appShell = doc.querySelector("main.app-shell");
+    if (appShell) {
+      const contentPanel = appShell.querySelector(".content-panel");
+      if (contentPanel) {
+        Array.from(contentPanel.childNodes).forEach((node) => {
+          contentGrid.appendChild(document.importNode(node, true));
+        });
+      }
+    } else {
+      Array.from(doc.body.childNodes).forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          contentGrid.appendChild(document.importNode(node, true));
+        }
+      });
+    }
+
+    const bodyCard = contentGrid.querySelector("article.card.hero-card");
+    if (bodyCard && bodyCard.parentElement === contentGrid) {
+      Array.from(bodyCard.childNodes).forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+          contentGrid.insertBefore(document.importNode(node, true), bodyCard);
+        }
+      });
+      bodyCard.remove();
+    }
+  } catch (error) {
+    console.error("Error loading resource document:", error);
+    contentGrid.innerHTML = `<div class="card empty-state"><p>Unable to load this document.</p></div>`;
+  }
 }
 
 function getFilteredItems(items) {

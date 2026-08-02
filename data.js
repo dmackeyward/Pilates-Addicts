@@ -2,7 +2,7 @@ const knowledgeBase = [
   {
     key: "home",
     label: "Home",
-    description: "A quick-access dashboard for class plans, exercise series, spring settings, and teaching foundations.",
+    description: "A quick-access dashboard for class plans, exercise series, spring settings, and anatomical foundations.",
     items: [
       {
         title: "What is Pilates?",
@@ -119,8 +119,8 @@ const knowledgeBase = [
   },
   {
     key: "foundations",
-    label: "Foundations",
-    description: "Core movement principles that keep teaching safe, effective, and purposeful.",
+    label: "Anatomy & Biomechanics",
+    description: "Core anatomical and biomechanical principles that keep teaching safe, effective, and purposeful.",
     items: [
       {
         title: "Neutral spine",

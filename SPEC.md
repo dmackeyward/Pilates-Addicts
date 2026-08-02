@@ -8,7 +8,7 @@ Make this a quick-access hub rather than a reading page.
 - Recent Updates: For example, "Added new Short Spine notes".
 - Search Bar: A key feature for the knowledge base so instructors can search for topics such as "Boxing" or "1 Yellow spring".
 
-## 2. Foundations
+## 2. Anatomy & Biomechanics
 
 Consolidate the theory, history, and core principles in this section.
 

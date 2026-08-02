@@ -12,7 +12,7 @@ const knowledgeBase = [
       {
         title: "Pilates Principles",
         summary: "Core principles that guide alignment, breath, and purposeful movement.",
-        link: "docs/home/anatomical-biomechanical-principles.html",
+        link: "docs/home/pilates-principles.html",
       },
       {
         title: "Teaching Philosophy",
@@ -125,42 +125,42 @@ const knowledgeBase = [
       {
         title: "Neutral spine",
         summary: "A balanced spinal alignment that supports the core while remaining mobile.",
-        link: "docs/home/anatomical-biomechanical-principles.html#neutral-spine",
+        link: "docs/home/pilates-principles.html#neutral-spine",
       },
       {
         title: "Shoulders back and down",
         summary: "Upper-body positioning that supports breathing, posture, and clean movement.",
-        link: "docs/home/anatomical-biomechanical-principles.html#shoulders",
+        link: "docs/home/pilates-principles.html#shoulders",
       },
       {
         title: "Hips balanced",
         summary: "Pelvic alignment that creates a stable base and efficient force transfer.",
-        link: "docs/home/anatomical-biomechanical-principles.html#hips",
+        link: "docs/home/pilates-principles.html#hips",
       },
       {
         title: "Joints and muscles",
         summary: "How the body is designed to move with control, mobility, and coordination.",
-        link: "docs/home/anatomical-biomechanical-principles.html#joints-and-muscles",
+        link: "docs/home/pilates-principles.html#joints-and-muscles",
       },
       {
         title: "Why this matters",
         summary: "The importance of honoring anatomy and biomechanics in real Pilates work.",
-        link: "docs/home/anatomical-biomechanical-principles.html#why-this-matters",
+        link: "docs/home/pilates-principles.html#why-this-matters",
       },
       {
         title: "Winging",
         summary: "How scapular winging affects shoulder blade control and upper-body movement.",
-        link: "docs/home/anatomical-biomechanical-principles.html#winging",
+        link: "docs/home/pilates-principles.html#winging",
       },
       {
         title: "Dome-ing",
         summary: "How breath and core organization influence ribcage and abdominal support.",
-        link: "docs/home/anatomical-biomechanical-principles.html#dome-ing",
+        link: "docs/home/pilates-principles.html#dome-ing",
       },
       {
         title: "Teaching takeaway",
         summary: "A practical framework for teaching alignment and movement with intention.",
-        link: "docs/home/anatomical-biomechanical-principles.html#teaching-takeaway",
+        link: "docs/home/pilates-principles.html#teaching-takeaway",
       },
     ],
   },

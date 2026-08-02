@@ -81,8 +81,8 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 .category-button {
@@ -248,10 +248,14 @@ body {
 
 .card a:focus-visible,
 .card button:focus-visible,
-.search-input:focus-visible,
 .category-button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+.search-input:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .card a:hover,

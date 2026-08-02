@@ -173,8 +173,12 @@ function loadDocument(link, title, summary) {
 
   contentGrid.innerHTML = "";
 
+  const wrapper = document.createElement("article");
+  wrapper.className = "card resource-card";
+  contentGrid.appendChild(wrapper);
+
   if (link && link.startsWith("docs/")) {
-    fetchResourceDocument(link);
+    fetchResourceDocument(link, wrapper);
     return;
   }
 
@@ -187,10 +191,10 @@ function loadDocument(link, title, summary) {
   iframe.title = pageTitle;
 
   frameContainer.appendChild(iframe);
-  contentGrid.appendChild(frameContainer);
+  wrapper.appendChild(frameContainer);
 }
 
-async function fetchResourceDocument(link) {
+async function fetchResourceDocument(link, wrapper) {
   const resourceUrl = buildResourceUrl(link);
   try {
     const response = await fetch(resourceUrl);
@@ -208,25 +212,36 @@ async function fetchResourceDocument(link) {
       const contentPanel = appShell.querySelector(".content-panel");
       if (contentPanel) {
         Array.from(contentPanel.childNodes).forEach((node) => {
-          contentGrid.appendChild(document.importNode(node, true));
+          wrapper.appendChild(document.importNode(node, true));
         });
       }
     } else {
       Array.from(doc.body.childNodes).forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
-          contentGrid.appendChild(document.importNode(node, true));
+          wrapper.appendChild(document.importNode(node, true));
         }
       });
     }
 
-    const bodyCard = contentGrid.querySelector("article.card.hero-card");
-    if (bodyCard && bodyCard.parentElement === contentGrid) {
+    const bodyCard = wrapper.querySelector("article.card.hero-card");
+    if (bodyCard) {
       Array.from(bodyCard.childNodes).forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
-          contentGrid.insertBefore(document.importNode(node, true), bodyCard);
+          wrapper.insertBefore(document.importNode(node, true), bodyCard);
         }
       });
       bodyCard.remove();
+    }
+
+    const nestedShell = wrapper.querySelector("main.app-shell");
+    if (nestedShell) {
+      const innerPanel = nestedShell.querySelector(".content-panel");
+      if (innerPanel) {
+        Array.from(innerPanel.childNodes).forEach((node) => {
+          wrapper.appendChild(document.importNode(node, true));
+        });
+      }
+      nestedShell.remove();
     }
   } catch (error) {
     console.error("Error loading resource document:", error);

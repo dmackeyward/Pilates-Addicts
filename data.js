@@ -28,7 +28,7 @@ const knowledgeBase = [
   },
   {
     key: "exercise-library",
-    label: "Exercise Library",
+    label: "Exercises",
     description: "Instructional exercise series grouped by position and reformer focus.",
     items: [
       {

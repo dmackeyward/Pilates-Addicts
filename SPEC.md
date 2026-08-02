@@ -17,7 +17,7 @@ Consolidate the theory, history, and core principles in this section.
 - Classical vs. Contemporary: Differences, history, and how to blend the two.
 - Core Principles: Breath, pelvic placement, ribcage placement, scapular movement, and head/neck placement.
 
-## 3. Exercise Library
+## 3. Exercises
 
 Group exercises by apparatus or position. Since the current content implies Reformer work, label it clearly or organize it logically.
 

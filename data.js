@@ -34,22 +34,22 @@ const knowledgeBase = [
       {
         title: "Standing Series",
         summary: "Reformer standing work focused on balance, alignment, and control.",
-        link: "docs/exercises/standing-series/README.html",
+        link: "docs/exercises/standing-series/index.html",
       },
       {
         title: "Seated Series",
         summary: "Seated reformer work for posture, core support, and coordination.",
-        link: "docs/exercises/seated-series/README.html",
+        link: "docs/exercises/seated-series/index.html",
       },
       {
         title: "Feet in Straps Series",
         summary: "Lower-body and hip work that supports stability and articulation.",
-        link: "docs/exercises/feet-in-straps-series/README.html",
+        link: "docs/exercises/feet-in-straps-series/index.html",
       },
       {
         title: "Side Lying Glute Series",
         summary: "Side-lying glute and hip work for alignment and stability.",
-        link: "docs/exercises/side-lying-glute-series/README.html",
+        link: "docs/exercises/side-lying-glute-series/index.html",
       },
       {
         title: "Cheerleader Series",
@@ -75,17 +75,17 @@ const knowledgeBase = [
           {
             title: "Foundations Private",
             summary: "A beginner-friendly private lesson focused on alignment, breath, and control.",
-            link: "docs/class-plans/class-plan-1/README.html",
+            link: "docs/class-plans/class-plan-1/index.html",
           },
           {
             title: "Intermediate Private",
             summary: "A more dynamic private lesson for balance, strength, and coordination.",
-            link: "docs/class-plans/class-plan-2/README.html",
+            link: "docs/class-plans/class-plan-2/index.html",
           },
           {
             title: "Advanced Private",
             summary: "A challenging private lesson plan for athletic, strength-led work.",
-            link: "docs/class-plans/class-plan-3/README.html",
+            link: "docs/class-plans/class-plan-3/index.html",
           },
         ],
       },
@@ -96,24 +96,24 @@ const knowledgeBase = [
           {
             title: "Beginner Group",
             summary: "A simple group lesson with foundational movement and clear pacing.",
-            link: "docs/class-plans/class-plan-1/README.html",
+            link: "docs/class-plans/class-plan-1/index.html",
           },
           {
             title: "Full-Body Group",
             summary: "A cohesive group lesson for more complete reformer flow and sequencing.",
-            link: "docs/class-plans/class-plan-2/README.html",
+            link: "docs/class-plans/class-plan-2/index.html",
           },
           {
             title: "Athletic Group",
             summary: "A high-energy group lesson designed for strength, control, and challenge.",
-            link: "docs/class-plans/class-plan-3/README.html",
+            link: "docs/class-plans/class-plan-3/index.html",
           },
         ],
       },
       {
         title: "Lesson Templates",
         summary: "Reusable lesson-planning templates for warm-up, standing, core, and cool down segments.",
-        link: "docs/class-plans/class-plan-3/README.html",
+        link: "docs/class-plans/class-plan-3/index.html",
       },
     ],
   },

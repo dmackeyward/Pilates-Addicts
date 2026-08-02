@@ -26,9 +26,9 @@ Imported desktop files:
 - `docs/exercises/standing-series/standing-series-notes.md`
 - `docs/exercises/feet-in-straps-series/feet-in-straps-notes.md`
 - `docs/exercises/feet-in-straps-series/short-spine-notes.md`
-- `docs/exercises/side-lying-glute-series/README.md`
-- `docs/class-plans/class-plan-3/README.md`
-- `docs/assessments/exam/README.md`
+- `docs/exercises/side-lying-glute-series/index.md`
+- `docs/class-plans/class-plan-3/index.md`
+- `docs/assessments/exam/index.md`
 
 ## Next steps
 

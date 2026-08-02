@@ -123,7 +123,7 @@ body {
 
 .content-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 18px;
   justify-content: center;
   max-width: 1040px;
@@ -244,6 +244,14 @@ body {
   cursor: pointer;
   padding: 0;
   transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.card a:focus-visible,
+.card button:focus-visible,
+.search-input:focus-visible,
+.category-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .card a:hover,

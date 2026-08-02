@@ -3,10 +3,12 @@ const contentHeader = document.getElementById("contentHeader");
 const contentGrid = document.getElementById("contentGrid");
 const searchInput = document.getElementById("resourceSearch");
 
-let selectedIndex = 0;
-let currentView = "category";
-let currentItems = [];
-let currentParentTitle = "";
+const state = {
+  selectedIndex: 0,
+  currentView: "category",
+  currentItems: [],
+  currentParentTitle: "",
+};
 
 function normalizeRoute(hash) {
   return (hash || window.location.hash).replace(/^#\/?/, "");
@@ -25,24 +27,75 @@ function navigateTo(link, title, summary) {
   }
 }
 
+function setContentHeader(title, description) {
+  contentHeader.style.display = "block";
+  contentHeader.innerHTML = `
+    <h2>${title}</h2>
+    ${description ? `<p>${description}</p>` : ""}
+  `;
+}
+
 function renderCategoryButtons() {
   categoryList.innerHTML = "";
   knowledgeBase.forEach((category, index) => {
     const button = document.createElement("button");
     button.className = "category-button";
+    button.type = "button";
     button.textContent = category.label;
     button.addEventListener("click", () => selectCategory(index));
     categoryList.appendChild(button);
   });
 }
 
+function createActionLabel(item, options = {}) {
+  if (Array.isArray(item.children) && item.children.length) {
+    return "View lessons";
+  }
+
+  if (options.sectionKey === "exercise-library") {
+    return "View Exercise";
+  }
+
+  if (options.sectionKey === "lessons") {
+    return "View lesson";
+  }
+
+  return "View resource";
+}
+
+function createItemCard(item, options = {}) {
+  const card = document.createElement("article");
+  const hasChildren = Array.isArray(item.children) && item.children.length;
+  const actionLabel = createActionLabel(item, options);
+
+  card.className = "card";
+  card.innerHTML = `
+    <h3>${item.title}</h3>
+    <p>${item.summary}</p>
+    ${hasChildren
+      ? `<button class="resource-link" type="button">${actionLabel}</button>`
+      : `<a href="#${item.link || ""}" class="resource-link">${actionLabel}</a>`}
+  `;
+
+  const action = card.querySelector(".resource-link");
+  action.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (hasChildren) {
+      renderLessonChoices(item.children, item.title);
+    } else {
+      navigateTo(item.link, item.title, item.summary);
+    }
+  });
+
+  return card;
+}
+
 function renderHomeDashboard() {
   contentGrid.classList.remove("resource-view");
-  contentHeader.style.display = "block";
-  contentHeader.innerHTML = `
-    <h2>Welcome to your Pilates teaching hub</h2>
-    <p>Jump quickly to class plans, exercise series, and foundational teaching principles.</p>
-  `;
+  setContentHeader(
+    "Welcome to your Pilates teaching hub",
+    "Jump quickly to class plans, exercise series, and foundational teaching principles."
+  );
 
   contentGrid.innerHTML = "";
 
@@ -57,18 +110,17 @@ function renderHomeDashboard() {
   const sectionGrid = document.createElement("div");
   sectionGrid.className = "section-grid";
 
-  knowledgeBase.forEach((section) => {
+  knowledgeBase.forEach((section, index) => {
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
       <h3>${section.label}</h3>
       <p>${section.description}</p>
-      <button data-section-index="${knowledgeBase.indexOf(section)}">Open section</button>
+      <button class="resource-link" data-section-index="${index}" type="button">Open section</button>
     `;
 
-    card.querySelector("button").addEventListener("click", () => {
-      selectCategory(knowledgeBase.indexOf(section));
-    });
+    const button = card.querySelector("button");
+    button.addEventListener("click", () => selectCategory(index));
 
     sectionGrid.appendChild(card);
   });
@@ -78,12 +130,7 @@ function renderHomeDashboard() {
 
 function renderItems(items, title, description, options = {}) {
   contentGrid.classList.remove("resource-view");
-  contentHeader.style.display = "block";
-  contentHeader.innerHTML = `
-    <h2>${title}</h2>
-    <p>${description}</p>
-  `;
-
+  setContentHeader(title, description);
   contentGrid.innerHTML = "";
 
   const filteredItems = getFilteredItems(items);
@@ -91,62 +138,38 @@ function renderItems(items, title, description, options = {}) {
   if (!filteredItems.length) {
     const emptyState = document.createElement("article");
     emptyState.className = "card empty-state";
-    emptyState.innerHTML = `<p>No matches for that search.</p>`;
+    emptyState.innerHTML = "<p>No matches for that search.</p>";
     contentGrid.appendChild(emptyState);
     return;
   }
 
+  const isSingleCardView = filteredItems.length === 1;
   filteredItems.forEach((item) => {
-    const card = document.createElement("article");
-    const isSingleCardView = filteredItems.length === 1;
-    card.className = `card${isSingleCardView ? " single-card-full" : ""}`;
-    const hasChildren = Array.isArray(item.children) && item.children.length;
-    const actionLabel = hasChildren
-      ? "View lessons"
-      : options.sectionKey === "exercise-library"
-        ? "View Exercise"
-        : options.sectionKey === "lessons"
-          ? "View lesson"
-          : "View resource";
-
-    card.innerHTML = `
-      <h3>${item.title}</h3>
-      <p>${item.summary}</p>
-      ${hasChildren ? '<button class="resource-link" type="button">' + actionLabel + '</button>' : '<a href="#' + (item.link || "") + '" class="resource-link">' + actionLabel + '</a>'}
-    `;
-
-    const action = card.querySelector(".resource-link");
-    action.addEventListener("click", (event) => {
-      event.preventDefault();
-      if (hasChildren) {
-        renderLessonChoices(item.children, item.title);
-      } else {
-        navigateTo(item.link, item.title, item.summary);
-      }
-    });
-
+    const card = createItemCard(item, options);
+    if (isSingleCardView) {
+      card.classList.add("single-card-full");
+    }
     contentGrid.appendChild(card);
   });
 }
 
 function renderLessonChoices(items, parentTitle) {
-  currentView = "children";
-  currentItems = items;
-  currentParentTitle = parentTitle;
+  state.currentView = "children";
+  state.currentItems = items;
+  state.currentParentTitle = parentTitle;
   renderItems(items, parentTitle, "Select a lesson to open it.", { sectionKey: "lessons" });
 }
 
 function selectCategory(index) {
-  selectedIndex = index;
-  currentView = "category";
+  state.selectedIndex = index;
+  state.currentView = "category";
   const selected = knowledgeBase[index];
   const buttons = document.querySelectorAll(".category-button");
   buttons.forEach((button, idx) => button.classList.toggle("active", idx === index));
 
-  currentItems = selected.items;
-  currentParentTitle = selected.label;
+  state.currentItems = selected.items;
+  state.currentParentTitle = selected.label;
   renderItems(selected.items, selected.label, selected.description, {
-    useExerciseLabel: selected.key === "exercise-library",
     sectionKey: selected.key,
   });
 }
@@ -159,18 +182,20 @@ function buildResourceUrl(link) {
   return hash ? `${path}${cacheBuster}#${hash}` : `${path}${cacheBuster}`;
 }
 
+function appendNodes(nodes, target) {
+  nodes.forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+      target.appendChild(document.importNode(node, true));
+    }
+  });
+}
+
 function loadDocument(link, title, summary) {
   contentGrid.classList.add("resource-view");
   const pageTitle = title || "Resource";
   const pageDescription = summary || "";
-  const descriptionMarkup = pageDescription ? `<p>${pageDescription}</p>` : "";
 
-  contentHeader.style.display = "block";
-  contentHeader.innerHTML = `
-    <h2>${pageTitle}</h2>
-    ${descriptionMarkup}
-  `;
-
+  setContentHeader(pageTitle, pageDescription);
   contentGrid.innerHTML = "";
 
   const wrapper = document.createElement("article");
@@ -205,47 +230,24 @@ async function fetchResourceDocument(link, wrapper) {
     const doc = parser.parseFromString(htmlText, "text/html");
 
     const header = doc.querySelector("header.site-header");
-    if (header) header.remove();
+    if (header) {
+      header.remove();
+    }
 
     const appShell = doc.querySelector("main.app-shell");
     if (appShell) {
       const contentPanel = appShell.querySelector(".content-panel");
       if (contentPanel) {
-        Array.from(contentPanel.childNodes).forEach((node) => {
-          wrapper.appendChild(document.importNode(node, true));
-        });
+        appendNodes(Array.from(contentPanel.childNodes), wrapper);
+      } else {
+        appendNodes(Array.from(appShell.childNodes), wrapper);
       }
     } else {
-      Array.from(doc.body.childNodes).forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          wrapper.appendChild(document.importNode(node, true));
-        }
-      });
-    }
-
-    const bodyCard = wrapper.querySelector("article.card.hero-card");
-    if (bodyCard) {
-      Array.from(bodyCard.childNodes).forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
-          wrapper.insertBefore(document.importNode(node, true), bodyCard);
-        }
-      });
-      bodyCard.remove();
-    }
-
-    const nestedShell = wrapper.querySelector("main.app-shell");
-    if (nestedShell) {
-      const innerPanel = nestedShell.querySelector(".content-panel");
-      if (innerPanel) {
-        Array.from(innerPanel.childNodes).forEach((node) => {
-          wrapper.appendChild(document.importNode(node, true));
-        });
-      }
-      nestedShell.remove();
+      appendNodes(Array.from(doc.body.childNodes), wrapper);
     }
   } catch (error) {
     console.error("Error loading resource document:", error);
-    contentGrid.innerHTML = `<div class="card empty-state"><p>Unable to load this document.</p></div>`;
+    contentGrid.innerHTML = '<div class="card empty-state"><p>Unable to load this document.</p></div>';
   }
 }
 
@@ -275,10 +277,10 @@ function handleRoute() {
 }
 
 searchInput.addEventListener("input", () => {
-  if (currentView === "children") {
-    renderLessonChoices(getFilteredItems(currentItems), currentParentTitle);
+  if (state.currentView === "children") {
+    renderLessonChoices(getFilteredItems(state.currentItems), state.currentParentTitle);
   } else {
-    selectCategory(selectedIndex);
+    selectCategory(state.selectedIndex);
   }
 });
 

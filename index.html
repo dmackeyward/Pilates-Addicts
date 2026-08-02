@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pilates Addicts</title>
-  <link rel="stylesheet" href="styles.css?v=20260801-1" />
+  <link rel="stylesheet" href="styles.css?v=20260802-2" />
 </head>
 <body>
   <header class="site-header">
@@ -17,8 +17,9 @@
   <main class="app-shell">
     <aside class="sidebar">
       <h2>Navigation</h2>
-      <input id="resourceSearch" class="search-input" type="search" placeholder="Search Pilates Addicts..." />
-      <nav id="categoryList"></nav>
+      <label class="search-label" for="resourceSearch">Search resources</label>
+      <input id="resourceSearch" class="search-input" type="search" placeholder="Search Pilates Addicts..." autocomplete="off" />
+      <nav id="categoryList" aria-label="Knowledge base sections"></nav>
     </aside>
 
     <section class="content-panel">
@@ -34,7 +35,7 @@
     <p>Start building your Pilates knowledge base. Future release: website + mobile app.</p>
   </footer>
 
-  <script src="data.js?v=20260801-1"></script>
-  <script src="script.js?v=20260801-1"></script>
+  <script src="data.js?v=20260802-2"></script>
+  <script src="script.js?v=20260802-2"></script>
 </body>
 </html>

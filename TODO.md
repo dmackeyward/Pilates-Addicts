@@ -1,9 +1,18 @@
 TODO
 
+Add sections to home: teaching key aspects, manipulating key teaching variables, class variables, health and safety
+
+
+
+
+
+
+
+
+
+
+
+
+
 -Styling issues
 -Back Navigation issues
-
-FUTURE
-
--Create a template for Exercises and Lessons
--Create the option to Add new Exercises and Lessons

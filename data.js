@@ -1,6 +1,6 @@
 const knowledgeBase = [
   {
-    key: "home",
+key: "home",
     label: "Home",
     description:
       "A quick-access dashboard for class plans, exercise series, spring settings, and anatomical foundations.",
@@ -28,6 +28,30 @@ const knowledgeBase = [
         summary:
           "A focused comparison of traditional and modern Pilates methods.",
         link: "docs/home/classical-vs-contemporary.html",
+      },
+      {
+        title: "Teaching Key Aspects",
+        summary:
+          "Strategies for clear verbal cueing, tactile feedback, and client observation.",
+        link: "docs/home/teaching-key-aspects.html",
+      },
+      {
+        title: "Manipulating Teaching Variables",
+        summary:
+          "How to adapt tempo, levers, resistance, and range of motion to tailor intensity.",
+        link: "docs/home/manipulating-teaching-variables.html",
+      },
+      {
+        title: "Class Variables",
+        summary:
+          "Key factors for structuring sessions, including class format, flow, duration, and apparatus.",
+        link: "docs/home/class-variables.html",
+      },
+      {
+        title: "Health and Safety",
+        summary:
+          "Essential protocols for equipment safety, injury prevention, and client contraindications.",
+        link: "docs/home/health-and-safety.html",
       },
     ],
   },

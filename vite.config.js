@@ -1,10 +1,11 @@
 // vite.config.js
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+// CHANGE THE LINE BELOW: Added curly braces around svelte
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [svelte()],
   server: {
-    port: 3000, // You can change the port if needed
+    port: 3000, 
   },
 });

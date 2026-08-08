@@ -8,14 +8,39 @@ const state = {
   currentView: "category",
   currentItems: [],
   currentParentTitle: "",
+  currentParentLink: "",
+  currentSectionKey: "",
 };
 
 function normalizeRoute(hash) {
   return (hash || window.location.hash).replace(/^#\/?/, "");
 }
 
-function findItemByLink(link) {
-  return knowledgeBase.flatMap((category) => category.items).find((item) => item.link === link);
+function buildCategoryRoute(categoryKey) {
+  return `category/${categoryKey}`;
+}
+
+function buildChildrenRoute(sectionKey, parentLink) {
+  return `children/${sectionKey}/${encodeURIComponent(parentLink)}`;
+}
+
+function findCategoryByKey(key) {
+  return knowledgeBase.find((category) => category.key === key);
+}
+
+function findItemByLink(link, items = knowledgeBase.flatMap((category) => category.items)) {
+  for (const item of items) {
+    if (item.link === link) return item;
+    if (Array.isArray(item.children)) {
+      const found = findItemByLink(link, item.children);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function findParentItemByLink(link) {
+  return findItemByLink(link);
 }
 
 function navigateTo(link, title, summary) {
@@ -24,6 +49,30 @@ function navigateTo(link, title, summary) {
     loadDocument(link, title, summary);
   } else {
     window.location.hash = link;
+  }
+}
+
+function navigateToCategory(categoryKey) {
+  const route = buildCategoryRoute(categoryKey);
+  if (normalizeRoute(window.location.hash) === route) {
+    const category = findCategoryByKey(categoryKey);
+    if (category) {
+      selectCategory(knowledgeBase.indexOf(category), false);
+    }
+  } else {
+    window.location.hash = route;
+  }
+}
+
+function navigateToChildren(sectionKey, parentLink) {
+  const route = buildChildrenRoute(sectionKey, parentLink);
+  if (normalizeRoute(window.location.hash) === route) {
+    const parentItem = findParentItemByLink(parentLink);
+    if (parentItem) {
+      renderLessonChoices(parentItem.children, parentItem.title, sectionKey, parentLink);
+    }
+  } else {
+    window.location.hash = route;
   }
 }
 
@@ -37,22 +86,25 @@ function setContentHeader(title, description) {
 
 function renderCategoryButtons() {
   categoryList.innerHTML = "";
-  knowledgeBase.forEach((category, index) => {
+  knowledgeBase.forEach((category) => {
     const button = document.createElement("button");
     button.className = "category-button";
     button.type = "button";
     button.textContent = category.label;
-    button.addEventListener("click", () => selectCategory(index));
+    button.addEventListener("click", () => navigateToCategory(category.key));
     categoryList.appendChild(button);
   });
 }
 
 function createActionLabel(item, options = {}) {
-  if (Array.isArray(item.children) && item.children.length) {
-    return "View lessons";
+  const hasChildren = Array.isArray(item.children) && item.children.length;
+  const isExerciseSection = options.sectionKey === "exercise-library" || options.sectionKey === "exercises";
+
+  if (hasChildren) {
+    return isExerciseSection ? "View exercises" : "View lessons";
   }
 
-  if (options.sectionKey === "exercise-library") {
+  if (isExerciseSection) {
     return "View Exercise";
   }
 
@@ -81,7 +133,8 @@ function createItemCard(item, options = {}) {
   action.addEventListener("click", (event) => {
     event.preventDefault();
     if (hasChildren) {
-      renderLessonChoices(item.children, item.title);
+      // Pass the current sectionKey down to the sub-level view
+      navigateToChildren(options.sectionKey, item.link);
     } else {
       navigateTo(item.link, item.title, item.summary);
     }
@@ -120,7 +173,7 @@ function renderHomeDashboard() {
     `;
 
     const button = card.querySelector("button");
-    button.addEventListener("click", () => selectCategory(index));
+    button.addEventListener("click", () => navigateToCategory(section.key));
 
     sectionGrid.appendChild(card);
   });
@@ -153,14 +206,20 @@ function renderItems(items, title, description, options = {}) {
   });
 }
 
-function renderLessonChoices(items, parentTitle) {
+function renderLessonChoices(items, parentTitle, sectionKey = "lessons", parentLink = "") {
   state.currentView = "children";
   state.currentItems = items;
   state.currentParentTitle = parentTitle;
-  renderItems(items, parentTitle, "Select a lesson to open it.", { sectionKey: "lessons" });
+  state.currentParentLink = parentLink;
+  state.currentSectionKey = sectionKey;
+  
+  const isExerciseSection = sectionKey === "exercise-library" || sectionKey === "exercises";
+  const subTitle = isExerciseSection ? "Select an exercise to open it." : "Select a lesson to open it.";
+
+  renderItems(items, parentTitle, subTitle, { sectionKey });
 }
 
-function selectCategory(index) {
+function selectCategory(index, updateHash = true) {
   state.selectedIndex = index;
   state.currentView = "category";
   const selected = knowledgeBase[index];
@@ -169,9 +228,17 @@ function selectCategory(index) {
 
   state.currentItems = selected.items;
   state.currentParentTitle = selected.label;
+
   renderItems(selected.items, selected.label, selected.description, {
     sectionKey: selected.key,
   });
+
+  if (updateHash) {
+    const route = buildCategoryRoute(selected.key);
+    if (normalizeRoute(window.location.hash) !== route) {
+      window.location.hash = route;
+    }
+  }
 }
 
 function buildResourceUrl(link) {
@@ -264,8 +331,28 @@ function getFilteredItems(items) {
 function handleRoute() {
   const route = normalizeRoute(window.location.hash);
   if (!route) {
-    selectCategory(0);
+    selectCategory(0, false);
     return;
+  }
+
+  const [segment, ...rest] = route.split("/");
+  if (segment === "category") {
+    const key = rest.join("/");
+    const category = findCategoryByKey(key);
+    if (category) {
+      selectCategory(knowledgeBase.indexOf(category), false);
+      return;
+    }
+  }
+
+  if (segment === "children") {
+    const sectionKey = rest.shift();
+    const parentLink = decodeURIComponent(rest.join("/"));
+    const parentItem = findParentItemByLink(parentLink);
+    if (parentItem && Array.isArray(parentItem.children)) {
+      renderLessonChoices(parentItem.children, parentItem.title, sectionKey, parentLink);
+      return;
+    }
   }
 
   const item = findItemByLink(route);
@@ -278,9 +365,14 @@ function handleRoute() {
 
 searchInput.addEventListener("input", () => {
   if (state.currentView === "children") {
-    renderLessonChoices(getFilteredItems(state.currentItems), state.currentParentTitle);
+    renderLessonChoices(
+      getFilteredItems(state.currentItems),
+      state.currentParentTitle,
+      state.currentSectionKey,
+      state.currentParentLink
+    );
   } else {
-    selectCategory(state.selectedIndex);
+    selectCategory(state.selectedIndex, false);
   }
 });
 

@@ -7,6 +7,8 @@ models:
     provider: ollama
     model: qwen2.5-coder:32b
     apiBase: http://localhost:11434
+    defaultCompletionOptions:
+      contextLength: 4096 # Keeps things snappy; drop to 2048 if it's still crawling
     roles:
       - chat
       - edit

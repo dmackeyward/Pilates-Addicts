@@ -14,14 +14,14 @@ export const articles = writable([
 export const searchResults = writable([]);
 export const article = writable({});
 
-function fetchArticles() {
+export function fetchArticles() {
   // Fetch articles from API or local data
 }
 
-function searchArticles(query) {
+export function searchArticles(query) {
   // Search articles based on query and update searchResults store
 }
 
-function fetchArticle(id) {
+export function fetchArticle(id) {
   // Fetch specific article by id and update article store
 }

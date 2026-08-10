@@ -1,3 +1,6 @@
-<main>
-  <h1>Welcome to Pilates Addicts</h1>
-</main>
+<!-- src/App.svelte -->
+<script>
+  let message = 'Welcome to Pilates Addicts';
+</script>
+
+<h1>{message}</h1>

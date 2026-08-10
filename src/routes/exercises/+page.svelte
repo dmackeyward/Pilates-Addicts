@@ -4,15 +4,14 @@
   
   let searchTerm = $state('');
 
-  // Safe filtering supporting both 'title' and 'name' columns
   let filteredExercises = $derived(
     data.exercises.filter(ex => {
-      const titleOrName = ex.title || ex.name || '';
+      const name = ex.name || '';
       const description = ex.description || '';
       const query = searchTerm.toLowerCase();
 
       return (
-        titleOrName.toLowerCase().includes(query) ||
+        name.toLowerCase().includes(query) ||
         description.toLowerCase().includes(query)
       );
     })
@@ -40,11 +39,11 @@
     <div class="exercise-grid">
       {#each filteredExercises as exercise (exercise.id)}
         <a href={`/exercises/${exercise.slug}`} class="exercise-card">
-          <h3>{exercise.title}</h3>
+          <h3>{exercise.name}</h3>
           {#if exercise.description}
             <p>{exercise.description}</p>
           {/if}
-          <span class="category-tag">{exercise.category || 'Reformer'}</span>
+          <span class="category-tag">{exercise.spring_settings || 'Reformer'}</span>
         </a>
       {/each}
     </div>
@@ -108,16 +107,16 @@
     font-size: 0.9rem;
     line-height: 1.4;
   }
-    .category-tag {
-        align-self: flex-start;
-        font-size: 0.75rem;
-        background: #eee;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        color: #555; /* Fixed from #55I */
-        text-transform: uppercase;
-        font-weight: 600;
-    }
+  .category-tag {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    background: #eee;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: #555;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
   .empty {
     color: #666;
     font-style: italic;

@@ -4,21 +4,36 @@
 </script>
 
 <svelte:head>
-  <title>{data.exercise.title} | Pilates Addicts</title>
+  <title>{data.exercise.name} | Pilates Addicts</title>
 </svelte:head>
 
 <article class="exercise-detail">
   <a href="/exercises" class="back-link">← Back to Library</a>
   
   <header>
-    <h1>{data.exercise.title}</h1>
-    <span class="badge">{data.exercise.category}</span>
+    <h1>{data.exercise.name}</h1>
+    <!-- If your query also joins categories or displays body region -->
+    <span class="badge">{data.exercise.spring_settings || 'Reformer'}</span>
   </header>
 
   <section class="description">
     <h2>Purpose</h2>
     <p>{data.exercise.description}</p>
   </section>
+
+  {#if data.exercise.setup_instructions}
+    <section class="instructions">
+      <h2>Setup Instructions</h2>
+      <p>{data.exercise.setup_instructions}</p>
+    </section>
+  {/if}
+
+  {#if data.exercise.execution_instructions}
+    <section class="instructions">
+      <h2>Execution</h2>
+      <p>{data.exercise.execution_instructions}</p>
+    </section>
+  {/if}
 </article>
 
 <style>
@@ -42,5 +57,5 @@
     font-size: 0.8rem;
     font-weight: bold;
   }
-  .description { margin-top: 2rem; }
+  .description, .instructions { margin-top: 2rem; }
 </style>

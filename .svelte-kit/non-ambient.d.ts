@@ -29,7 +29,7 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/" | "/exercises" | "/exercises/[slug]" | "/guides" | "/guides/[slug]" | "/lessons" | "/lessons/[slug]";
+		RouteId(): "/" | "/exercises" | "/exercises/[slug]" | "/guides" | "/guides/[slug]" | "/lessons" | "/lessons/[slug]" | "/search";
 		RouteParams(): {
 			"/exercises/[slug]": { slug: string };
 			"/guides/[slug]": { slug: string };
@@ -42,9 +42,10 @@ declare module "$app/types" {
 			"/guides": { slug?: string | undefined };
 			"/guides/[slug]": { slug: string };
 			"/lessons": { slug?: string | undefined };
-			"/lessons/[slug]": { slug: string }
+			"/lessons/[slug]": { slug: string };
+			"/search": Record<string, never>
 		};
-		Pathname(): "/" | "/exercises" | `/exercises/${string}` & {} | `/guides/${string}` & {} | "/lessons" | `/lessons/${string}` & {};
+		Pathname(): "/" | "/exercises" | `/exercises/${string}` & {} | "/guides" | `/guides/${string}` & {} | "/lessons" | `/lessons/${string}` & {} | "/search";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): string & {};
 	}

@@ -1,29 +1,24 @@
-import { db } from '../../../lib/db'; // fallback relative import if alias acts up
-import { exercises } from '$lib/db/schema';
+// src/routes/exercises/[slug]/+page.server.ts
+import { db } from '../../../lib/db';
+import { exercises } from '../../../lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }: { params: { slug: string } }) => {
-    const { slug } = params;
+export const load: PageServerLoad = async ({ params }) => {
+  const { slug } = params;
 
-    const exercise = await db.query.exercises.findFirst({
-        where: eq(exercises.slug, slug),
-        with: {
-            exerciseMuscles: {
-                with: {
-                    muscle: true
-                }
-            },
-            cues: true
-        }
-    });
+  const result = await db
+    .select()
+    .from(exercises)
+    .where(eq(exercises.slug, slug));
 
-    if (!exercise) {
-        throw error(404, 'Exercise not found');
-    }
+  const exercise = result[0];
 
-    return {
-        exercise
-    };
+  if (!exercise) {
+    error(404, 'Exercise not found');
+  }
+
+  return {
+    exercise
+  };
 };

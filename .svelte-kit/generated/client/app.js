@@ -31,7 +31,7 @@ export const dictionary = {
 		"/guides/[slug]": [6],
 		"/lessons": [7],
 		"/lessons/[slug]": [8],
-		"/search": [9]
+		"/search": [~9]
 	};
 
 export const hooks = {

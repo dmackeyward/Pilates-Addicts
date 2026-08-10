@@ -4,12 +4,18 @@
   
   let searchTerm = $state('');
 
-  // Svelte 5 derived state to filter exercises dynamically as you type
+  // Safe filtering supporting both 'title' and 'name' columns
   let filteredExercises = $derived(
-    data.exercises.filter(ex => 
-      ex.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (ex.description && ex.description.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
+    data.exercises.filter(ex => {
+      const titleOrName = ex.title || ex.name || '';
+      const description = ex.description || '';
+      const query = searchTerm.toLowerCase();
+
+      return (
+        titleOrName.toLowerCase().includes(query) ||
+        description.toLowerCase().includes(query)
+      );
+    })
   );
 </script>
 

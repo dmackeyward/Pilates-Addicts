@@ -1,18 +1,11 @@
-import { mdsvex } from 'mdsvex';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { mdsvex } from 'mdsvex';
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
-  plugins: [
-    svelte(),
-    sveltekit({
-      preprocess: [mdsvex({ extensions: ['.svx', '.md'] })],
-      extensions: ['.svelte', '.svx', '.md']
-    })
-  ],
-  resolve: {
-    alias: { $lib: fileURLToPath(new URL('./src/lib', import.meta.url)) }
-  }
+    plugins: [
+        sveltekit()
+    ],
+    // If you want mdsvex globally for processing markdown files:
+    // Pass extensions to sveltekit or handle via svelte plugin options if needed.
 });

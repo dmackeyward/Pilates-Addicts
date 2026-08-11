@@ -1,4 +1,3 @@
-// src/routes/exercises/[slug]/+page.server.ts
 import { db } from '$lib/db';
 import { exercises } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
@@ -6,20 +5,26 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const { slug } = params;
+  try {
+    const exercise = await db.query.exercises.findFirst({
+      where: eq(exercises.slug, params.slug),
+      with: {
+        categories: { with: { category: true } },
+        props: { with: { prop: true } },
+        exerciseMuscles: { with: { muscle: true } }, // Fixed: matching schema key
+        cues: true,
+        modifications: true,
+        contraindications: true
+      }
+    });
 
-  const result = await db
-    .select()
-    .from(exercises)
-    .where(eq(exercises.slug, slug));
+    if (!exercise) {
+      throw error(404, `Exercise '${params.slug}' not found`);
+    }
 
-  const exercise = result[0];
-
-  if (!exercise) {
-    error(404, 'Exercise not found');
+    return { exercise };
+  } catch (err) {
+    console.error('Error loading exercise page:', err);
+    throw error(500, 'Failed to load exercise details');
   }
-
-  return {
-    exercise
-  };
 };

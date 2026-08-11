@@ -1,7 +1,9 @@
 import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 
-// 1. Exercises Table
+// ==========================================
+// 1. EXERCISES TABLE (Apparatus Specs Included)
+// ==========================================
 export const exercises = sqliteTable('exercises', {
     id: integer('id').primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),
@@ -10,33 +12,92 @@ export const exercises = sqliteTable('exercises', {
     setupInstructions: text('setup_instructions'),
     executionInstructions: text('execution_instructions'),
     springSettings: text('spring_settings'), // e.g., "1 Red, 1 Blue"
+    footbarPosition: text('footbar_position'),
+    gearBar: text('gear_bar'),
+    stopperPosition: text('stopper_position'),
+    headrestPosition: text('headrest_position')
 });
 
-// 2. Muscles Table
+// ==========================================
+// 2. MUSCLES & JUNCTION
+// ==========================================
 export const muscles = sqliteTable('muscles', {
     id: integer('id').primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),         // e.g., "Transversus Abdominis"
     bodyRegion: text('body_region').notNull() // e.g., "Core", "Lower Body"
 });
 
-// 3. Exercise <-> Muscles Junction Table (Many-to-Many)
 export const exerciseMuscles = sqliteTable('exercise_muscles', {
     exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
     muscleId: integer('muscle_id').notNull().references(() => muscles.id, { onDelete: 'cascade' }),
-    targetType: text('target_type').notNull(), // 'primary' or 'secondary'
+    targetType: text('target_type').notNull(), // 'Primary' or 'Secondary'
 }, (t) => ({
     pk: primaryKey({ columns: [t.exerciseId, t.muscleId] })
 }));
 
-// 4. Cues Table (One-to-Many with Exercises)
+// ==========================================
+// 3. CATEGORIES & JUNCTION
+// ==========================================
+export const categories = sqliteTable('categories', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    name: text('name').notNull(),
+    description: text('description')
+});
+
+export const exerciseCategories = sqliteTable('exercise_categories', {
+    exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
+    categoryId: integer('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' })
+}, (t) => ({
+    pk: primaryKey({ columns: [t.exerciseId, t.categoryId] })
+}));
+
+// ==========================================
+// 4. PROPS & JUNCTION
+// ==========================================
+export const props = sqliteTable('props', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    name: text('name').notNull(),
+    description: text('description')
+});
+
+export const exerciseProps = sqliteTable('exercise_props', {
+    exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
+    propId: integer('prop_id').notNull().references(() => props.id, { onDelete: 'cascade' })
+}, (t) => ({
+    pk: primaryKey({ columns: [t.exerciseId, t.propId] })
+}));
+
+// ==========================================
+// 5. CUES TABLE
+// ==========================================
 export const cues = sqliteTable('cues', {
     id: integer('id').primaryKey({ autoIncrement: true }),
     exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
-    category: text('category').notNull(), // 'Breath', 'Alignment', 'Imagery'
+    category: text('category').notNull(), // 'Breath', 'Alignment', 'Form', 'Control'
     cueText: text('cue_text').notNull(),
 });
 
-// 5. Lessons Table
+// ==========================================
+// 6. MODIFICATIONS & CONTRAINDICATIONS
+// ==========================================
+export const exerciseModifications = sqliteTable('exercise_modifications', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
+    modificationType: text('modification_type').notNull(), // 'Regression', 'Progression', 'Injury Modification'
+    title: text('title').notNull(),
+    description: text('description').notNull()
+});
+
+export const contraindications = sqliteTable('contraindications', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
+    condition: text('condition').notNull(), // e.g., 'Osteoporosis'
+    notes: text('notes')
+});
+
+// ==========================================
+// 7. LESSONS & JUNCTION
+// ==========================================
 export const lessons = sqliteTable('lessons', {
     id: integer('id').primaryKey({ autoIncrement: true }),
     title: text('title').notNull(),
@@ -46,7 +107,6 @@ export const lessons = sqliteTable('lessons', {
     difficulty: text('difficulty'), // 'Beginner', 'Intermediate', 'Advanced'
 });
 
-// 6. Lesson <-> Exercises Junction Table (Ordered sequence)
 export const lessonExercises = sqliteTable('lesson_exercises', {
     lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
     exerciseId: integer('exercise_id').notNull().references(() => exercises.id, { onDelete: 'cascade' }),
@@ -55,10 +115,18 @@ export const lessonExercises = sqliteTable('lesson_exercises', {
     pk: primaryKey({ columns: [t.lessonId, t.exerciseId] })
 }));
 
-// --- Drizzle Relations Definitions ---
+
+// ==========================================
+// DRIZZLE RELATIONS DEFINITIONS
+// ==========================================
+
 export const exercisesRelations = relations(exercises, ({ many }) => ({
     exerciseMuscles: many(exerciseMuscles),
+    categories: many(exerciseCategories),
+    props: many(exerciseProps),
     cues: many(cues),
+    modifications: many(exerciseModifications),
+    contraindications: many(contraindications),
     lessonExercises: many(lessonExercises),
 }));
 
@@ -71,8 +139,34 @@ export const exerciseMusclesRelations = relations(exerciseMuscles, ({ one }) => 
     muscle: one(muscles, { fields: [exerciseMuscles.muscleId], references: [muscles.id] }),
 }));
 
+export const categoriesRelations = relations(categories, ({ many }) => ({
+    exerciseCategories: many(exerciseCategories),
+}));
+
+export const exerciseCategoriesRelations = relations(exerciseCategories, ({ one }) => ({
+    exercise: one(exercises, { fields: [exerciseCategories.exerciseId], references: [exercises.id] }),
+    category: one(categories, { fields: [exerciseCategories.categoryId], references: [categories.id] }),
+}));
+
+export const propsRelations = relations(props, ({ many }) => ({
+    exerciseProps: many(exerciseProps),
+}));
+
+export const exercisePropsRelations = relations(exerciseProps, ({ one }) => ({
+    exercise: one(exercises, { fields: [exerciseProps.exerciseId], references: [exercises.id] }),
+    prop: one(props, { fields: [exerciseProps.propId], references: [props.id] }),
+}));
+
 export const cuesRelations = relations(cues, ({ one }) => ({
     exercise: one(exercises, { fields: [cues.exerciseId], references: [exercises.id] }),
+}));
+
+export const exerciseModificationsRelations = relations(exerciseModifications, ({ one }) => ({
+    exercise: one(exercises, { fields: [exerciseModifications.exerciseId], references: [exercises.id] }),
+}));
+
+export const contraindicationsRelations = relations(contraindications, ({ one }) => ({
+    exercise: one(exercises, { fields: [contraindications.exerciseId], references: [exercises.id] }),
 }));
 
 export const lessonsRelations = relations(lessons, ({ many }) => ({

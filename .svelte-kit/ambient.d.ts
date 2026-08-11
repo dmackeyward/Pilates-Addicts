@@ -53,6 +53,7 @@ declare module '$env/static/private' {
 	export const HOSTNAME: string;
 	export const NODE: string;
 	export const SSH_AUTH_SOCK: string;
+	export const FLYCTL_INSTALL: string;
 	export const MEMORY_PRESSURE_WRITE: string;
 	export const PYDEVD_DISABLE_FILE_VALIDATION: string;
 	export const COLOR: string;
@@ -238,6 +239,7 @@ declare module '$env/dynamic/private' {
 		HOSTNAME: string;
 		NODE: string;
 		SSH_AUTH_SOCK: string;
+		FLYCTL_INSTALL: string;
 		MEMORY_PRESSURE_WRITE: string;
 		PYDEVD_DISABLE_FILE_VALIDATION: string;
 		COLOR: string;

@@ -1,53 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="sqlite.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2440"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="3" parent="0"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="sqlite_sequence" custom_title="0" dock_id="1" table="4,15:mainsqlite_sequence"/><dock_state state="000000ff00000000fd00000001000000020000065b00000353fc0100000001fb000000160064006f0063006b00420072006f007700730065003101000000000000065b0000012700ffffff000002e70000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="cues" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="44"/><column index="2" value="88"/><column index="3" value="370"/><column index="4" value="490"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="exercise_modifications" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="44"/><column index="2" value="88"/><column index="3" value="137"/><column index="4" value="226"/><column index="5" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="exercise_muscles" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="88"/><column index="2" value="80"/><column index="3" value="89"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="exercises" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="44"/><column index="2" value="226"/><column index="3" value="195"/><column index="4" value="300"/><column index="5" value="300"/><column index="6" value="300"/><column index="7" value="210"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="lesson_exercises" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="75"/><column index="2" value="88"/><column index="3" value="123"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="lessons" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="44"/><column index="2" value="187"/><column index="3" value="187"/><column index="4" value="300"/><column index="5" value="133"/><column index="6" value="101"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="muscles" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="44"/><column index="2" value="163"/><column index="3" value="95"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="sqlite_sequence" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="78"/><column index="2" value="44"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">BEGIN TRANSACTION;
-
--- 1. Create a new table for Exercise Variations (Regressions / Progressions / Modifications)
-CREATE TABLE IF NOT EXISTS &quot;exercise_modifications&quot; (
-    &quot;id&quot; INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    &quot;exercise_id&quot; INTEGER NOT NULL,
-    &quot;modification_type&quot; TEXT NOT NULL, -- e.g., 'Regression', 'Progression', 'Injury Modification'
-    &quot;title&quot; TEXT NOT NULL,
-    &quot;description&quot; TEXT NOT NULL,
-    FOREIGN KEY(&quot;exercise_id&quot;) REFERENCES &quot;exercises&quot;(&quot;id&quot;) ON UPDATE NO ACTION ON DELETE CASCADE
-);
-
--- 2. Add more foundational &amp; intermediate exercises
-INSERT INTO &quot;exercises&quot; (&quot;id&quot;, &quot;name&quot;, &quot;slug&quot;, &quot;description&quot;, &quot;setup_instructions&quot;, &quot;execution_instructions&quot;, &quot;spring_settings&quot;) VALUES 
-(5, 'Knee Stretches: Round Back', 'knee-stretches-round-back', 'Dynamic kneeling core and stability exercise focusing on spinal articulation and lower body control.', 'Kneel on carriage facing the footbar with balls of feet against shoulder rests, hands on footbar, spine in flexion.', 'Exhale to press carriage out by scooping abdominals and flexing knees, keeping pelvis stable without lifting hips.', '1-2 Red Springs'),
-(6, 'Stomach Massage: Round Back', 'stomach-massage-round-back', 'Mid-back articulation, pelvic stability, and lower extremity coordination exercise sitting on the carriage.', 'Sit facing the front of the reformer with feet on the footbar in V-position, heels lower than toes, hands holding edge of carriage.', 'Press carriage out smoothly, keeping heels elevated and spine flexed in a rounded shape, then articulate home.', '2-3 Red Springs');
-
--- 3. Add more muscle groups for precise anatomical mapping
-INSERT INTO &quot;muscles&quot; (&quot;id&quot;, &quot;name&quot;, &quot;body_region&quot;) VALUES 
-(5, 'Rectus Abdominis', 'Core'),
-(6, 'Hip Flexors', 'Lower Body'),
-(7, 'Calves (Gastrocnemius/Soleus)', 'Lower Body'),
-(8, 'Latissimus Dorsi', 'Upper Body');
-
--- 4. Map the new exercises to their target muscles
-INSERT INTO &quot;exercise_muscles&quot; (&quot;exercise_id&quot;, &quot;muscle_id&quot;, &quot;target_type&quot;) VALUES 
-(5, 1, 'Primary'),
-(5, 6, 'Secondary'),
-(6, 2, 'Primary'),
-(6, 7, 'Secondary');
-
--- 5. Add professional teaching cues for the new exercises
-INSERT INTO &quot;cues&quot; (&quot;exercise_id&quot;, &quot;category&quot;, &quot;cue_text&quot;) VALUES 
-(5, 'Integration', 'Keep your shoulders stable over your wrists as your knees glide in and out.'),
-(5, 'Breath', 'Exhale deeply to pull the carriage home using only your center, not your feet.'),
-(6, 'Articulating', 'Scoop your belly button deeply away from your thighs as you press out.');
-
--- 6. Add practical modifications/regressions for accessibility
-INSERT INTO &quot;exercise_modifications&quot; (&quot;exercise_id&quot;, &quot;modification_type&quot;, &quot;title&quot;, &quot;description&quot;) VALUES 
-(2, 'Regression', 'Supported Head/Neck', 'Place a small sponge ball or folded towel under the head if the client experiences neck strain during the hundred.'),
-(5, 'Regression', 'Neutral Spine Knee Stretches', 'Use a neutral spine variation instead of round back for clients with specific lower back restrictions or acute lumbar sensitivity.');
-
--- 7. Add a second complete lesson plan
-INSERT INTO &quot;lessons&quot; (&quot;id&quot;, &quot;title&quot;, &quot;slug&quot;, &quot;description&quot;, &quot;duration_minutes&quot;, &quot;difficulty&quot;) VALUES 
-(2, 'Core Control &amp; Articulation Flow', 'core-control-articulation-flow', 'An energetic session focusing heavily on spinal flexion, scapular stability, and deep abdominal integration.', 45, 'Intermediate');
-
--- 8. Link the expanded exercise sequence to the new lesson
-INSERT INTO &quot;lesson_exercises&quot; (&quot;lesson_id&quot;, &quot;exercise_id&quot;, &quot;sequence_order&quot;) VALUES 
-(2, 2, 1),
-(2, 5, 2),
-(2, 6, 3);
-
-COMMIT;</sql><current_tab id="0"/></tab_sql></sqlb_project>
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="sqlite.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2440"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="cues" custom_title="0" dock_id="1" table="4,4:maincues"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000012b00ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">INSERT INTO exercise_modifications (exercise_id, modification_type, title, description) VALUES 
+((SELECT id FROM exercises WHERE slug = 'pulling-straps'), 'Regression', 'Lighter Spring / Choke Up', 'Use a lighter spring or hold strap rope above hardware to decrease lever weight.'),
+((SELECT id FROM exercises WHERE slug = 'mermaid'), 'Regression', 'Cross-Legged Sitting', 'Sit cross-legged on carriage if hip tightness prevents side-saddle position.'),
+((SELECT id FROM exercises WHERE slug = 'feet-in-straps-leg-circles'), 'Progression', 'Dumbwaiter / Arm Straps', 'Perform leg circles while holding small hand weights or maintaining tabletop arms.'),
+((SELECT id FROM exercises WHERE slug = 'pelvic-curl'), 'Regression', 'Neutral Bridge', 'Lift and lower pelvis in flat neutral back without spinal articulation for disc sensitivity.');</sql><current_tab id="0"/></tab_sql></sqlb_project>

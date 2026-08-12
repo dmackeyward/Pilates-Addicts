@@ -4,4 +4,5 @@ import * as schema from './schema';
 
 // This creates a local SQLite file named 'sqlite.db' in your project root
 const sqlite = new Database('sqlite.db');
+sqlite.exec('PRAGMA foreign_keys = ON;');
 export const db = drizzle(sqlite, { schema });

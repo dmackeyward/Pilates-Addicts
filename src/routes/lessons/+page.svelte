@@ -1,66 +1,169 @@
 <script lang="ts">
-	let { data } = $props();
+  let { data } = $props();
 
-	let searchQuery = $state('');
-	let selectedDifficulty = $state('All');
+  let searchQuery = $state('');
+  let selectedDifficulty = $state('All');
 
-	let filteredLessons = $derived(
-		data.lessons.filter((lesson) => {
-			const matchesSearch =
-				lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				lesson.description.toLowerCase().includes(searchQuery.toLowerCase());
-			const matchesDifficulty =
-				selectedDifficulty === 'All' || lesson.difficulty === selectedDifficulty;
-			return matchesSearch && matchesDifficulty;
-		})
-	);
+  let filteredLessons = $derived(
+    data.lessons.filter((lesson) => {
+      const matchesSearch =
+        lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lesson.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesDifficulty =
+        selectedDifficulty === 'All' || lesson.difficulty === selectedDifficulty;
+      return matchesSearch && matchesDifficulty;
+    })
+  );
 </script>
 
-<div class="max-w-6xl mx-auto p-6 space-y-6">
-	<header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-		<div>
-			<h1 class="text-3xl font-bold tracking-tight">Lesson Plans</h1>
-			<p class="text-slate-500">Curated sequence flows and session templates</p>
-		</div>
-		<div class="flex flex-wrap gap-3">
-			<input
-				type="text"
-				placeholder="Search plans..."
-				bind:value={searchQuery}
-				class="px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-			/>
-			<select
-				bind:value={selectedDifficulty}
-				class="px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-			>
-				<option value="All">All Difficulties</option>
-				<option value="Beginner">Beginner</option>
-				<option value="Intermediate">Intermediate</option>
-				<option value="Advanced">Advanced</option>
-			</select>
-		</div>
-	</header>
+<svelte:head>
+  <title>Lesson Plans | Pilates Addicts</title>
+</svelte:head>
 
-	<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-		{#each filteredLessons as lesson (lesson.id)}
-			<a
-				href="/lessons/{lesson.slug}"
-				class="block p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-emerald-500 transition-all hover:shadow-md"
-			>
-				<div class="flex justify-between items-start mb-3">
-					<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-700">
-						{lesson.difficulty}
-					</span>
-					<span class="text-xs font-medium text-slate-400">{lesson.durationMinutes} mins</span>
-				</div>
-				<h2 class="text-xl font-bold mb-2 text-slate-900">{lesson.title}</h2>
-				<p class="text-slate-600 text-sm mb-4 line-clamp-2">{lesson.description}</p>
-				<div class="text-xs text-emerald-600 font-semibold">
-					{lesson.lessonExercises.length} Exercises in Flow →
-				</div>
-			</a>
-		{:else}
-			<p class="text-slate-500 col-span-full text-center py-12">No lesson plans found.</p>
-		{/each}
-	</div>
+<div class="lessons-page">
+  <div class="header-section">
+    <div class="title-group">
+      <h1>Lesson Plans</h1>
+      <p class="subtitle">Curated sequence flows and session templates</p>
+    </div>
+    <div class="filter-group">
+      <input
+        type="text"
+        placeholder="Search plans..."
+        bind:value={searchQuery}
+        class="filter-input"
+      />
+      <select bind:value={selectedDifficulty} class="filter-select">
+        <option value="All">All Difficulties</option>
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+    </div>
+  </div>
+
+  {#if filteredLessons.length === 0}
+    <p class="empty">No lesson plans found matching your filters.</p>
+  {:else}
+    <div class="lessons-grid">
+      {#each filteredLessons as lesson (lesson.id)}
+        <a href={`/lessons/${lesson.slug}`} class="lesson-card">
+          <div>
+            <div class="card-header">
+              <span class="category-tag">{lesson.difficulty}</span>
+              <span class="duration">{lesson.durationMinutes} mins</span>
+            </div>
+            <h3>{lesson.title}</h3>
+            {#if lesson.description}
+              <p>{lesson.description}</p>
+            {/if}
+          </div>
+          <span class="meta-info">{lesson.lessonExercises.length} Exercises in Flow →</span>
+        </a>
+      {/each}
+    </div>
+  {/if}
 </div>
+
+<style>
+  .lessons-page {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .title-group h1 {
+    color: #222;
+    margin: 0 0 0.25rem 0;
+  }
+  .subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+  }
+  .filter-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .filter-input,
+  .filter-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+  }
+  .filter-input {
+    width: 220px;
+  }
+  .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .lesson-card {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    padding: 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .lesson-card:hover {
+    border-color: #999;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+  }
+  .lesson-card p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .category-tag {
+    font-size: 0.75rem;
+    background: #eee;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: #555;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .duration {
+    font-size: 0.8rem;
+    color: #888;
+  }
+  .meta-info {
+    font-size: 0.85rem;
+    color: #444;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  .empty {
+    color: #666;
+    font-style: italic;
+  }
+</style>

@@ -27,10 +27,10 @@ export const dictionary = {
 		"/": [2],
 		"/exercises": [~3],
 		"/exercises/[slug]": [~4],
-		"/guides": [5],
-		"/guides/[slug]": [6],
-		"/lessons": [7],
-		"/lessons/[slug]": [8],
+		"/guides": [~5],
+		"/guides/[slug]": [~6],
+		"/lessons": [~7],
+		"/lessons/[slug]": [~8],
 		"/search": [~9]
 	};
 

@@ -1,4 +1,3 @@
-<!-- src/routes/exercises/+page.svelte -->
 <script>
   let { data } = $props();
   
@@ -39,11 +38,13 @@
     <div class="exercise-grid">
       {#each filteredExercises as exercise (exercise.id)}
         <a href={`/exercises/${exercise.slug}`} class="exercise-card">
-          <h3>{exercise.name}</h3>
-          {#if exercise.description}
-            <p>{exercise.description}</p>
-          {/if}
-          <span class="category-tag">{exercise.spring_settings || 'Reformer'}</span>
+          <div>
+            <span class="category-tag">{exercise.spring_settings || 'Reformer'}</span>
+            <h3>{exercise.name}</h3>
+            {#if exercise.description}
+              <p>{exercise.description}</p>
+            {/if}
+          </div>
         </a>
       {/each}
     </div>
@@ -74,6 +75,8 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     width: 250px;
+    background-color: #fff;
+    color: #333;
   }
   .exercise-grid {
     display: grid;
@@ -97,18 +100,18 @@
     box-shadow: 0 3px 8px rgba(0,0,0,0.04);
   }
   .exercise-card h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0.5rem 0 0.5rem 0;
     color: #333;
     font-size: 1.1rem;
   }
   .exercise-card p {
-    margin: 0 0 1rem 0;
+    margin: 0;
     color: #666;
     font-size: 0.9rem;
     line-height: 1.4;
   }
   .category-tag {
-    align-self: flex-start;
+    display: inline-block;
     font-size: 0.75rem;
     background: #eee;
     padding: 0.2rem 0.5rem;

@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="sqlite.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2440"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="categories" custom_title="0" dock_id="1" table="4,10:maincategories"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000012b00ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">-- Seed Lessons (Overwrites if ID already exists)
-INSERT OR REPLACE INTO `lessons` (`id`, `title`, `slug`, `description`, `duration_minutes`, `difficulty`) VALUES
-(1, 'Full Body Reformer Essentials', 'full-body-reformer-essentials', 'A balanced 50-minute classical flow focusing on foundational alignment, footwork dynamics, and spinal mobility.', 50, 'Beginner'),
-(2, 'Core &amp; Articulation Masterclass', 'core-and-articulation-masterclass', 'An intense target session emphasizing deep abdominal scoop, segmental spinal flexion, and spinal extension control.', 45, 'Intermediate');
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="sqlite.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2631"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="categories" custom_title="0" dock_id="1" table="4,10:maincategories"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000012b00ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">-- 1. Drop the leftover temporary table if it exists
+DROP TABLE IF EXISTS cues_new;
 
--- Seed Lesson Exercises (Overwrites if combination already exists)
-INSERT OR REPLACE INTO `lesson_exercises` (`lesson_id`, `exercise_id`, `sequence_order`) VALUES
-(1, 1, 1),
-(1, 2, 2),
-(1, 3, 3),
-(2, 2, 1),
-(2, 4, 2);
+-- 2. Clean up the existing data to ensure consistency
+UPDATE cues SET category = 'Articulation' WHERE category = 'Articulating';
 
--- Seed Guides (Overwrites if ID already exists)
-INSERT OR REPLACE INTO `guides` (`id`, `title`, `slug`, `category`, `description`, `content`) VALUES
-(1, 'Osteoporosis Protocol &amp; Safety Precautions', 'osteoporosis-protocol-and-safety-precautions', 'Pathology &amp; Safety', 'Essential modifications and contraindications when programming for clients with low bone density.', '### Core Principles\n1. **Avoid Flexion:** Eliminate forward spinal flexion under load.\n2. **Maintain Axial Elongation:** Focus on neutral spine alignment.\n3. **Extension Emphasis:** Encourage thoracic extension to support posture.'),
-(2, 'Spring Resistance &amp; Gear Bar Mechanics', 'spring-resistance-and-gear-bar-mechanics', 'Apparatus Setup', 'Understanding leverage, spring weight adjustments, and gear positioning for various body proportions.', '### Gear Bar Selection\n- **1st Gear:** Shorter clients or those requiring less initial hip flexion.\n- **2nd Gear (Standard):** Most adult clients.\n- **3rd Gear:** Taller clients (6ft+) to prevent hip impingement.');
+-- 3. Create the new table with the expanded CHECK constraint
+CREATE TABLE cues_new (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    exercise_id INTEGER NOT NULL,
+    category TEXT NOT NULL CHECK (category IN ('Alignment', 'Articulation', 'Breath', 'Control', 'Form', 'Integration', 'Precision', 'Flow')),
+    cue_text TEXT NOT NULL,
+    FOREIGN KEY (exercise_id) REFERENCES exercises(id) ON DELETE CASCADE
+);
 
--- Seed Guide Exercises (Overwrites if combination already exists)
-INSERT OR REPLACE INTO `guide_exercises` (`guide_id`, `exercise_id`, `sequence_order`) VALUES
-(1, 1, 1),
-(1, 3, 2);</sql><current_tab id="0"/></tab_sql></sqlb_project>
+-- 4. Copy the data over from the original table
+INSERT INTO cues_new SELECT * FROM cues;
+
+-- 5. Drop the old table and rename the new one
+DROP TABLE cues;
+ALTER TABLE cues_new RENAME TO cues;</sql><current_tab id="0"/></tab_sql></sqlb_project>

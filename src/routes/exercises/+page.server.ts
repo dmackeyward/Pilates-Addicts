@@ -1,12 +1,14 @@
-// src/routes/exercises/+page.server.ts
 import { db } from '$lib/db';
-import { exercises } from '$lib/db/schema';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const allExercises = await db.select().from(exercises);
+  const allExercises = await db.query.exercises.findMany({
+    with: {
+      apparatusSettings: true,
+    },
+  });
 
   return {
-    exercises: allExercises
+    exercises: allExercises,
   };
 };

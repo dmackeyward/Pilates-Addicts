@@ -5,18 +5,35 @@ import { relations } from 'drizzle-orm';
 // 1. EXERCISES TABLE
 // ==========================================
 export const exercises = sqliteTable('exercises', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	name: text('name').notNull(),
-	slug: text('slug').notNull().unique(),
-	description: text('description'),
-	setupInstructions: text('setup_instructions'),
-	executionInstructions: text('execution_instructions'),
-	springSettings: text('spring_settings'), // e.g., "1 Red, 1 Blue"
-	footbarPosition: text('footbar_position'),
-	gearBar: text('gear_bar'),
-	stopperPosition: text('stopper_position'),
-	headrestPosition: text('headrest_position')
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  description: text('description'),
+  setupInstructions: text('setup_instructions'),
+  executionInstructions: text('execution_instructions'),
 });
+
+export const apparatus = sqliteTable('apparatus', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  description: text('description'),
+});
+
+export const exerciseApparatusSettings = sqliteTable('exercise_apparatus_settings', {
+  exerciseId: integer('exercise_id')
+    .notNull()
+    .references(() => exercises.id, { onDelete: 'cascade' }),
+  apparatusId: integer('apparatus_id')
+    .notNull()
+    .references(() => apparatus.id, { onDelete: 'cascade' }),
+  springSettings: text('spring_settings'),
+  footbarPosition: text('footbar_position'),
+  gearBar: text('gear_bar'),
+  stopperPosition: text('stopper_position'),
+  headrestPosition: text('headrest_position'),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.exerciseId, table.apparatusId] }),
+}));
 
 // ==========================================
 // 2. MUSCLES & JUNCTION
@@ -129,28 +146,30 @@ export const contraindications = sqliteTable('contraindications', {
 // 7. LESSONS & JUNCTION
 // ==========================================
 export const lessons = sqliteTable('lessons', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	title: text('title').notNull(),
-	slug: text('slug').notNull().unique(),
-	description: text('description').notNull(),
-	durationMinutes: integer('duration_minutes').notNull(),
-	difficulty: text('difficulty').notNull() // 'Beginner', 'Intermediate', 'Advanced'
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  description: text('description'), // removed .notNull()
+  durationMinutes: integer('duration_minutes'), // removed .notNull()
+  difficulty: text('difficulty'), // removed .notNull()
 });
 
 export const lessonExercises = sqliteTable(
-	'lesson_exercises',
-	{
-		lessonId: integer('lesson_id')
-			.notNull()
-			.references(() => lessons.id, { onDelete: 'cascade' }),
-		exerciseId: integer('exercise_id')
-			.notNull()
-			.references(() => exercises.id, { onDelete: 'cascade' }),
-		sequenceOrder: integer('sequence_order').notNull()
-	},
-	(t) => ({
-		pk: primaryKey({ columns: [t.lessonId, t.exerciseId] })
-	})
+  'lesson_exercises',
+  {
+    lessonId: integer('lesson_id')
+      .notNull()
+      .references(() => lessons.id, { onDelete: 'cascade' }),
+    exerciseId: integer('exercise_id')
+      .notNull()
+      .references(() => exercises.id, { onDelete: 'cascade' }),
+    sequenceOrder: integer('sequence_order').notNull(),
+    repetitions: text('repetitions'),
+    tempo: text('tempo'),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.lessonId, t.exerciseId] }),
+  })
 );
 
 // ==========================================
@@ -186,14 +205,15 @@ export const guideExercises = sqliteTable(
 // ==========================================
 
 export const exercisesRelations = relations(exercises, ({ many }) => ({
-	exerciseMuscles: many(exerciseMuscles),
-	categories: many(exerciseCategories),
-	props: many(exerciseProps),
-	cues: many(cues),
-	modifications: many(exerciseModifications),
-	contraindications: many(contraindications),
-	lessonExercises: many(lessonExercises),
-	guideExercises: many(guideExercises)
+  apparatusSettings: many(exerciseApparatusSettings),
+  exerciseMuscles: many(exerciseMuscles),
+  exerciseCategories: many(exerciseCategories),
+  exerciseProps: many(exerciseProps),
+  cues: many(cues),
+  modifications: many(exerciseModifications),
+  contraindications: many(contraindications),
+  lessonExercises: many(lessonExercises),
+  guideExercises: many(guideExercises),
 }));
 
 export const musclesRelations = relations(muscles, ({ many }) => ({
@@ -267,3 +287,21 @@ export const guideExercisesRelations = relations(guideExercises, ({ one }) => ({
 	guide: one(guides, { fields: [guideExercises.guideId], references: [guides.id] }),
 	exercise: one(exercises, { fields: [guideExercises.exerciseId], references: [exercises.id] })
 }));
+
+export const apparatusRelations = relations(apparatus, ({ many }) => ({
+  apparatusSettings: many(exerciseApparatusSettings),
+}));
+
+export const exerciseApparatusSettingsRelations = relations(
+  exerciseApparatusSettings,
+  ({ one }) => ({
+    exercise: one(exercises, {
+      fields: [exerciseApparatusSettings.exerciseId],
+      references: [exercises.id],
+    }),
+    apparatus: one(apparatus, {
+      fields: [exerciseApparatusSettings.apparatusId],
+      references: [apparatus.id],
+    }),
+  })
+);

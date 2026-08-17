@@ -57,6 +57,21 @@
             {#if lesson.description}
               <p>{lesson.description}</p>
             {/if}
+
+            <!-- Exercise Preview List -->
+            {#if lesson.lessonExercises.length > 0}
+              <div class="exercise-preview">
+                <strong>Flow Preview:</strong>
+                <ul>
+                  {#each lesson.lessonExercises.slice(0, 3) as le}
+                    <li>• {le.exercise.name}</li>
+                  {/each}
+                  {#if lesson.lessonExercises.length > 3}
+                    <li class="more-count">+ {lesson.lessonExercises.length - 3} more...</li>
+                  {/if}
+                </ul>
+              </div>
+            {/if}
           </div>
           <span class="meta-info">{lesson.lessonExercises.length} Exercises in Flow →</span>
         </a>
@@ -143,6 +158,26 @@
     font-size: 0.9rem;
     line-height: 1.4;
   }
+  .exercise-preview {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: #555;
+    background: #f9f9f9;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+  }
+  .exercise-preview ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0 0;
+  }
+  .exercise-preview li {
+    margin-bottom: 0.15rem;
+  }
+  .more-count {
+    color: #888;
+    font-style: italic;
+  }
   .category-tag {
     font-size: 0.75rem;
     background: #eee;
@@ -158,9 +193,9 @@
   }
   .meta-info {
     font-size: 0.85rem;
-    color: #444;
+    color: #059669;
     font-weight: 600;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
   }
   .empty {
     color: #666;

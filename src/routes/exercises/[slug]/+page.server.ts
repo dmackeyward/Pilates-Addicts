@@ -9,9 +9,10 @@ export const load: PageServerLoad = async ({ params }) => {
     const exercise = await db.query.exercises.findFirst({
       where: eq(exercises.slug, params.slug),
       with: {
-        categories: { with: { category: true } },
-        props: { with: { prop: true } },
-        exerciseMuscles: { with: { muscle: true } }, // Fixed: matching schema key
+        // Updated key names to match schema relations
+        exerciseCategories: { with: { category: true } },
+        exerciseProps: { with: { prop: true } },
+        exerciseMuscles: { with: { muscle: true } },
         cues: true,
         modifications: true,
         contraindications: true
